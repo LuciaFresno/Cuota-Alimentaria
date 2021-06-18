@@ -39,7 +39,7 @@ options(max.print=25000)
 
 
 
-EPH <- read_excel('EPH al IVT2020.xlsx',trim_ws=TRUE)
+EPH <- read_excel('EPH al IVT2020.xlsx',trim_ws=TRUE, skip=1)
 
 # selecciono las columnas relevantes para moverme con más velocidad
 ssEPH <- EPH[,c(1,11,12,14)]
@@ -47,17 +47,9 @@ ssEPH <- EPH[,c(1,11,12,14)]
 # emprolijo headers para qeu sean más fáciles de invocar
 colnames(ssEPH) <- c("CODUSU","RELACION", "SEXO", "EDAD")
 
-# elimino primer línea que tenía datos repetidos de header
-ssEPH <- ssEPH[-1,]
-
-# necesito tratar la columna EDAD como numérico para comparar
-ssEPH$EDAD <- as.numeric(ssEPH$EDAD)
-
-
-
 # cuántos hogares hay en mi lista?
 # 
-codigos_de_hogar_unicos <- table(unique(ssEPH$CODUSU)) #  14310 resultados / 998 hogares con 1 sola persona / nro mayor de convivientes 12 /
+codigos_de_hogar_unicos <- length(unique(ssEPH$CODUSU)) #  14310 resultados / 998 hogares con 1 sola persona / nro mayor de convivientes 12 /
 
 
 # Identificar los hogares incompletos, o sea aquellos donde haya unx jefx de hogar pero no haya cónyugue/pareja
@@ -66,9 +58,6 @@ codigos_de_hogar_unicos <- table(unique(ssEPH$CODUSU)) #  14310 resultados / 998
 #identifico los hogares en los que tienen NNyA
 hogares_con_NNyA <-  ssEPH %>% filter(EDAD <= 18) #  12,036 entries incluyendo  EDAD=18 y  11,264 entries sacándolos
 # 60 NNyA entre 14 y 18 años con ESTADO_CIVIL diferente a 5-soltero
-
-
-
 #identifico los hogares donde vive lx cónyugue de lx jefx de hogar
 hogares_con_conyugues <- ssEPH %>% filter (RELACION == 2) # 7,720 entries
 
